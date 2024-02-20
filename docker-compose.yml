@@ -62,11 +62,11 @@ services:
   server-merimasjid:
     image: "client-merimasjid"
     ports:
-      - "3009:4000"  
+      - "30010:4000"  
     networks:
       - web
     labels:
-      - "traefik.port=3009"
+      - "traefik.port=30010"
       - "traefik.http.routers.servermerimasjid.rule=Host(`apimerimasjid.labyrinthglobalsolutions.com`)"
       - "traefik.http.routers.servermerimasjid.tls=true"
       - "traefik.http.routers.servermerimasjid.tls.certresolver=lets-encrypt"
