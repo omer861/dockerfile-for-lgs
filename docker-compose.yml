@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v2.10.1
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - web
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/home/ubuntu/acme.json:/acme.json"
+      - "/home/ubuntu/traefik_dynamic.toml:/traefik_dynamic.toml"
+      - "/home/ubuntu/traefik.toml:/traefik.toml"
+
+  nexusmeet:
+    image: "nexusmeet"
+    ports:
+      - "8082:8082"
+    networks:
+      - web
+    labels:
+      - "traefik.port=8082"
+      - "traefik.http.routers.admin.rule=Host(`nexusmeet.labyrinthglobalsolutions.com`)"
+      - "traefik.http.routers.admin.tls=true"
+
+  client-omini:
+    image: "client-omini"
+    ports:
+      - "3006:80"
+    networks:
+      - web
+    labels:
+      - "traefik.port=3006"
+      - "traefik.http.routers.cliomini.rule=Host(`omnifinity.labyrinthglobalsolutions.com`)"
+      - "traefik.http.routers.cliomini.tls=true"
+      - "traefik.http.routers.cliomini.tls.certresolver=lets-encrypt"
+
+  server-omini:
+    image: "server-omini"
+    ports:
+      - "3007:4000"  
+    networks:
+      - web
+    labels:
+      - "traefik.port=3007"
+      - "traefik.http.routers.serveromini.rule=Host(`apiomnifinity.labyrinthglobalsolutions.com`)"
+      - "traefik.http.routers.serveromini.tls=true"
+      - "traefik.http.routers.serveromini.tls.certresolver=lets-encrypt"
+  client-merimasjid:
+    image: "client-merimasjid"
+    ports:
+      - "3008:80"  
+    networks:
+      - web
+    labels:
+      - "traefik.port=3008"
+      - "traefik.http.routers.clientmerimasjid.rule=Host(`merimasjid.labyrinthglobalsolutions.com`)"
+      - "traefik.http.routers.clientmerimasjid.tls=true"
+      - "traefik.http.routers.clientmerimasjid.tls.certresolver=lets-encrypt"
+  server-merimasjid:
+    image: "client-merimasjid"
+    ports:
+      - "3009:4000"  
+    networks:
+      - web
+    labels:
+      - "traefik.port=3009"
+      - "traefik.http.routers.servermerimasjid.rule=Host(`apimerimasjid.labyrinthglobalsolutions.com`)"
+      - "traefik.http.routers.servermerimasjid.tls=true"
+      - "traefik.http.routers.servermerimasjid.tls.certresolver=lets-encrypt"
+      
+
+networks:
+  web:
+    external: true
